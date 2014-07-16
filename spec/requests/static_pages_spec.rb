@@ -66,6 +66,13 @@ describe "Static pages" do
      it {page.should have_selector('h1', text: 'Contact')} 
      it {page.should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | Contact")}
     end
+    describe "singup page" do
+      before{visit signup_path}
+
+      it {should have_selector('h1', text:'Sing up')}
+      it {should have_selector('title',text:'Sign up')}
+    end
+    
 
     #  it "should not have a custom page title" do
     #   visit root_path

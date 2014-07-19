@@ -10,6 +10,11 @@ require 'spec_helper'
 #     end
 #   end
 # end
-describe UsersHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe UsersHelper do
+    describe "with valid information" do	  
+  	  describe "after saving the user" do
+  	  	it { should_not have_link('Sign out') }
+	  end
+    end
 end
+

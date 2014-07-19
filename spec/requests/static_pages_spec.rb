@@ -72,6 +72,7 @@ describe "Static pages" do
     it {should_not have_selector('h1', text:'Sing up')}
     it {should_not have_selector('title', text:'Sign up')}
   end
+
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
     before { visit user_path(user) }
@@ -79,8 +80,12 @@ describe "Static pages" do
     it { should have_selector('h1',text: user.name) }
     it { should_not have_selector('title', text: user.name) }
   end
-
-
+ 
+  describe "signin page" do
+    before { visit signin_path }
+    it { should have_selector('h1',text: 'Sign in') }
+    it { should_not have_selector('title', text: 'Sign in') }
+  end
 
     #  it "should not have a custom page title" do
     #   visit root_path

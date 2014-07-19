@@ -10,8 +10,12 @@ describe User do
 	it {should respond_to (:password_digest)}
 	it {should respond_to (:password)}
 	it {should respond_to (:password_confirmation)}
-	it {should be_valid}
+	it {should respond_to(:remember_token)}
+	#it {should be_valid}
 	it {should respond_to(:authenticate) }
+
+
+
 
 	subject{ @user }
 	
@@ -83,6 +87,10 @@ describe User do
 			let(:user_for_invalid_password) { found_user.authenticate("invalid") }
 			it { should_not == user_for_invalid_password }
 			specify { user_for_invalid_password.should be_false }
+		end
+		describe "remember token" do
+			before { @user.save }
+			its(:remember_token) { should_not be_blank }
 		end
 	end
 end 		

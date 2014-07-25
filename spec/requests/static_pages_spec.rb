@@ -25,21 +25,21 @@ describe "Static pages" do
     it {should_not have_selector('title', text: '| home')}
     end
    
-    # it "should have the h1 'Sample App'" do
-    #   visit root_path
-    #   page.should have_selector('h1', :text => 'Sample App')
-    # end
-    # it "should have the base title" do
-    #   visit root_path
-    #   page.should have_selector('title', :text => "Ruby on Rails Tutorial Sample App")
-    # end
+     # it "should have the h1 'Sample App'" do
+     #   visit root_path
+     #   page.should have_selector('h1', :text => 'Sample App')
+     # end
+     # it "should have the base title" do
+     #   visit root_path
+     #   page.should have_selector('title', :text => "Ruby on Rails Tutorial Sample App")
+     # end
 
   #end
 
-  describe "Help page" do
-    before {visit help_path}
-    it {should have_selector('h1', text: 'Help')}
-    it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | Help")}
+    describe "Help page" do
+      before {visit help_path}
+      it {should have_selector('h1', text: 'Help')}
+      it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | Help")}
     end
 
 
@@ -49,11 +49,11 @@ describe "Static pages" do
     # end
   #end
 
-  describe "About page" do
-    before {visit about_path}
-    it {should have_selector('h1', text: 'About Us')}
-    it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | about")}
-  end
+    describe "About page" do
+      before {visit about_path}
+      it {should have_selector('h1', text: 'About Us')}
+      it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | about")}
+    end
 
     # it "should not have a custom page title" do
     #   visit about_path
@@ -61,35 +61,48 @@ describe "Static pages" do
     # end
   #end
  
-  describe "Contact page" do
+    describe "Contact page" do
       before {visit contact_path}
-     it {should have_selector('h1', text: 'Contact')} 
-     it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | Contact")}
+      it {should have_selector('h1', text: 'Contact')} 
+      it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App | Contact")}
     end
     
-  describe "singup page" do
-    before{visit signup_path}
-    it {should_not have_selector('h1', text:'Sing up')}
-    it {should_not have_selector('title', text:'Sign up')}
-  end
+    describe "singup page" do
+      before{visit signup_path}
+      it {should_not have_selector('h1', text:'Sing up')}
+      it {should_not have_selector('title', text:'Sign up')}
+    end
 
-  describe "profile page" do
-    let(:user) { FactoryGirl.create(:user) }
-    before { visit user_path(user) }
-    # Code to make a user variable
-    it { should have_selector('h1',text: user.name) }
-    it { should_not have_selector('title', text: user.name) }
-  end
+    describe "profile page" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { visit user_path(user) }
+      # Code to make a user variable
+      it { should have_selector('h1',text: user.name) }
+      it { should_not have_selector('title', text: user.name) }
+    end
  
-  describe "signin page" do
-    before { visit signin_path }
-    it { should have_selector('h1',text: 'Sign in') }
-    it { should_not have_selector('title', text: 'Sign in') }
-  end
+    describe "signin page" do
+      before { visit signin_path }
+      it { should have_selector('h1',text: 'Sign in') }
+      it { should_not have_selector('title', text: 'Sign in') }
+    end
 
     #  it "should not have a custom page title" do
     #   visit root_path
     #  page.should not have_selector('title', text: '| Contact')
     # end
- #end
+    describe "for signed-in users"  do 
+      let (:user) {FactoryGirl.create(:user)}
+      before do
+        FactoryGirl.create(:micropost,user:user, content:"Lorem ipsum")
+        FactoryGirl.create(:micropost,user:user, content:"Dolor sit amet")
+        sign_in user
+        visit root_path
+      end
+      it "should render the user's feed" do
+        user.feed.each do |item|
+         page.should have_selector("li##{item.id}", text: item.content)
+        end
+      end
+    end
 end

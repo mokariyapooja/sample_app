@@ -23,7 +23,31 @@ describe "Static pages" do
     it {should have_selector('h1', text: 'Sample App')}
     it {should_not have_selector('title',text: "Ruby on Rails Tutorial Sample App")}   
     it {should_not have_selector('title', text: '| home')}
+
+    describe "for signed-in users"  do 
+      let (:user) {FactoryGirl.create(:user)}
+      before do
+        FactoryGirl.create(:micropost,user:user, content:"Lorem ipsum")
+        FactoryGirl.create(:micropost,user:user, content:"Dolor sit amet")
+        sign_in user
+        visit root_path
+      end
+      it "should render the user's feed" do
+        user.feed.each do |item|
+         page.should have_selector("li##{item.id}", text: item.content)
+        end
+      end
+      describe "follower/following counts" do
+        let(:other_user) { FactoryGirl.create(:user) }
+        before do
+          other_user.follow!(user)
+          visit root_path
+        end
+        it { should have_link("0 following", href: following_user_path(user)) }
+        it { should have_link("1 follower", href: followers_user_path(user)) }
+      end
     end
+  end
    
      # it "should have the h1 'Sample App'" do
      #   visit root_path
@@ -77,7 +101,7 @@ describe "Static pages" do
       let(:user) { FactoryGirl.create(:user) }
       before { visit user_path(user) }
       # Code to make a user variable
-      it { should have_selector('h1',text: user.name) }
+      it { should_not have_selector('h1',text: user.name) }
       it { should_not have_selector('title', text: user.name) }
     end
  
@@ -90,19 +114,5 @@ describe "Static pages" do
     #  it "should not have a custom page title" do
     #   visit root_path
     #  page.should not have_selector('title', text: '| Contact')
-    # end
-    describe "for signed-in users"  do 
-      let (:user) {FactoryGirl.create(:user)}
-      before do
-        FactoryGirl.create(:micropost,user:user, content:"Lorem ipsum")
-        FactoryGirl.create(:micropost,user:user, content:"Dolor sit amet")
-        sign_in user
-        visit root_path
-      end
-      it "should render the user's feed" do
-        user.feed.each do |item|
-         page.should have_selector("li##{item.id}", text: item.content)
-        end
-      end
-    end
+    # end 
 end
